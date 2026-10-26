@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error
 import math
-from lab1.statistical import NUMBER_OF_SEPARATION_LINES
+from web_scraping.statistical import NUMBER_OF_SEPARATION_LINES
 import textwrap
 
 class SyntheticData:

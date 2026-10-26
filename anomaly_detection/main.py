@@ -5,13 +5,13 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-from lab1.parser import Parser
-from lab1.statistical import NUMBER_OF_SEPARATION_LINES
-from lab1.tools import results_trend
-from lab1.synthetic_data import SyntheticData
+from web_scraping.parser import Parser
+from web_scraping.statistical import NUMBER_OF_SEPARATION_LINES
+from web_scraping.tools import results_trend
+from web_scraping.synthetic_data import SyntheticData
 
-from lab2.anomaly import AnomalyGenerator
-from lab2.anomaly_processing import AnomalyProcessing
+from anomaly_detection.anomaly import AnomalyGenerator
+from anomaly_detection.anomaly_processing import AnomalyProcessing
 
 MAX_DEGREE_POLYNOMIAL = 100
 
@@ -35,25 +35,20 @@ def process_data(data_x, data_y, title_x, title_y, max_degree=30, noise_factor=0
 
 
 def quality_and_poly_model(x, original_data, cleaned_data, degree, plot=True):
-    # Знаходимо спільну довжину
     min_len = min(len(original_data), len(cleaned_data), len(x))
     x = np.array(x[:min_len])
     y_orig = np.array(original_data[:min_len])
     y_clean = np.array(cleaned_data[:min_len])
 
-    # Поліноміальні фічі
     poly = PolynomialFeatures(degree=degree)
     X_poly = poly.fit_transform(x.reshape(-1, 1))
 
-    # Навчання моделей
     model_orig = LinearRegression().fit(X_poly, y_orig)
     model_clean = LinearRegression().fit(X_poly, y_clean)
 
-    # Прогнози
     y_pred_orig = model_orig.predict(X_poly)
     y_pred_clean = model_clean.predict(X_poly)
 
-    # Метрики
     mse = mean_squared_error(y_pred_orig, y_pred_clean)
     mae = mean_absolute_error(y_pred_orig, y_pred_clean)
     rmse = np.sqrt(mse)
@@ -67,7 +62,6 @@ def quality_and_poly_model(x, original_data, cleaned_data, degree, plot=True):
     print(f'R²  : {r2:.4f}')
     print('-' * NUMBER_OF_SEPARATION_LINES)
 
-    # Побудова графіка
     if plot:
         plt.figure(figsize=(10, 5))
         plt.plot(x, y_clean, label='Очищені дані', alpha=0.5)
@@ -86,7 +80,6 @@ def quality_and_poly_model(x, original_data, cleaned_data, degree, plot=True):
 
 
 def train_polynomial_model(x, y, degree=2):
-    # Нормалізація для стабільного навчання
     x_mean, x_std = np.mean(x), np.std(x)
     x_norm = (x - x_mean) / x_std
 
@@ -146,35 +139,24 @@ def alpha_beta_filter(x, y):
 
     y_filtered = np.zeros_like(y)
 
-    # Початкові умови
     speed_est = (y[1, 0] - y[0, 0]) / T0
     y_pred = y[0, 0] + speed_est
 
     y_filtered[0, 0] = y[0, 0]
 
     for i in range(1, n):
-        # Динамічне оновлення коефіцієнтів
         alpha = (2 * (2 * i - 1)) / (i * (i + 1))
         beta = 6 / (i * (i + 1))
-
-        # Помилка між виміром і прогнозом
         error = y[i, 0] - y_pred
 
-        # Захист від розбіжності: обмежуємо помилку
         max_error = 3 * np.std(y[:i]) if i > 10 else 1e4
         if abs(error) > max_error:
             error = np.sign(error) * max_error
 
-        # Оновлення згладженого значення
         y_filtered[i, 0] = y_pred + alpha * error
-
-        # Оновлення швидкості
         speed_est = speed_est + (beta / T0) * error
-
-        # Новий прогноз
         y_pred = y_filtered[i, 0] + speed_est
 
-    # Побудова графіка
     plt.figure(figsize=(10, 6))
     plt.plot(x, y, label='Оригінальні дані', alpha=0.6)
     plt.plot(x, y_filtered, label='Після рекурсивного згладжування (α-β фільтр)', linewidth=2)
@@ -185,7 +167,6 @@ def alpha_beta_filter(x, y):
     plt.grid(True)
     plt.show()
 
-    # Статистичні показники
     print('Статистичні показники для згладжених даних:')
     print(f'Середнє: {np.mean(y_filtered):.2f}')
     print(f'Медіана: {np.median(y_filtered):.2f}')
@@ -195,7 +176,6 @@ def alpha_beta_filter(x, y):
     print(f'Дисперсія: {np.var(y_filtered):.2f}')
     print(f'Кількість записів: {len(y_filtered)}')
 
-    # r2 відповідність
     r_squared = r2_score(y, y_filtered)
     print(f'R²: {r_squared:.4f}')
 
@@ -207,16 +187,16 @@ def alpha_beta_filter(x, y):
 if __name__ == '__main__':
     # parse data from ekatalog website, save to files
     # https://ek.ua/ua/ECOFLOW-DELTA-2.htm
-    url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
-    if not url:
-        url = 'https://ek.ua/ua/CANON-50MM-F-1-4-EF-USM.htm'
-    #url = 'https://ek.ua/ua/ECOFLOW-DELTA-2.htm'
-    parser = Parser(url)
-    price_change, number_of_shops = parser.parse_table(save_to_files=False)
+    # url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
+    # if not url:
+    #     url = 'https://ek.ua/ua/CANON-50MM-F-1-4-EF-USM.htm'
+    # #url = 'https://ek.ua/ua/ECOFLOW-DELTA-2.htm'
+    # parser = Parser(url)
+    # price_change, number_of_shops = parser.parse_table(save_to_files=False)
 
     # read from file, if needed
-    # price_change = pd.read_excel('./data/ECOFLOW-DELTA-2_price_change.xlsx')
-    # number_of_shops = pd.read_excel('./data/ECOFLOW-DELTA-2_number_of_shops.xlsx')
+    price_change = pd.read_excel('../web_scraping//data/ECOFLOW-DELTA-2_price_change.xlsx')
+    number_of_shops = pd.read_excel('../web_scraping/data/ECOFLOW-DELTA-2_number_of_shops.xlsx')
 
     type_of_noise = input('Введіть тип шуму (uniform або normal, за замовчуванням normal): ')
     if type_of_noise not in ['uniform', 'normal']:

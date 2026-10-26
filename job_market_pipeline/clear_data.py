@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 from deep_translator import GoogleTranslator
-from lab4.ai_model_process import get_response_api
+from job_market_pipeline.ai_model_process import get_response_api
 import logging
 
 

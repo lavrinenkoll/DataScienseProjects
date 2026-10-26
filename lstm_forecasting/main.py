@@ -1,8 +1,10 @@
-from lab1.parser import Parser
-from lab1.statistical import DataStats
-from lab1.synthetic_data import SyntheticData
-from lab1.tools import find_best_model_trend
-from lab1.main import NUMBER_OF_SEPARATION_LINES
+import pandas as pd
+
+from web_scraping.parser import Parser
+from web_scraping.statistical import DataStats
+from web_scraping.synthetic_data import SyntheticData
+from web_scraping.tools import find_best_model_trend
+from web_scraping.main import NUMBER_OF_SEPARATION_LINES
 
 import numpy as np
 from tensorflow.keras.models import Sequential
@@ -114,14 +116,18 @@ def cropped_predictions(data, percent_crop=0.1):
 
 
 if __name__ == "__main__":
-    url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
-    if not url:
-        print('URL не введено. Використовується URL за замовчуванням.')
-        url = 'https://ek.ua/ua/APPLE-IPHONE-16-PRO-MAX-256GB.htm'
-    print('-' * NUMBER_OF_SEPARATION_LINES)
+    # url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
+    # if not url:
+    #     print('URL не введено. Використовується URL за замовчуванням.')
+    #     url = 'https://ek.ua/ua/APPLE-IPHONE-16-PRO-MAX-256GB.htm'
+    # print('-' * NUMBER_OF_SEPARATION_LINES)
+    #
+    # parser = Parser(url)
+    # price_change, number_of_shops = parser.parse_table(save_to_files=False)
 
-    parser = Parser(url)
-    price_change, number_of_shops = parser.parse_table(save_to_files=False)
+    # read from file, if needed
+    price_change = pd.read_excel('../web_scraping//data/ECOFLOW-DELTA-2_price_change.xlsx')
+    number_of_shops = pd.read_excel('../web_scraping/data/ECOFLOW-DELTA-2_number_of_shops.xlsx')
 
     x_analysis, x_title = price_change['date'], 'Дата'
     y_analysis, y_title = price_change['avg'], 'Середня ціна'

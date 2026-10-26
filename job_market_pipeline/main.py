@@ -1,7 +1,7 @@
 import pandas as pd
-from lab4.parsing_process import grab_and_save, get_urls_dou, grab_dou_vacancy, get_urls_linkedin, grab_linkedin_vacancy
-from lab4.clear_data import clear_data_dou, clear_data_linkedin
-from lab4.data_analytics import generate_wordcloud_from_df, compare_dfs, generate_olap_cube
+from job_market_pipeline.parsing_process import grab_and_save, get_urls_dou, grab_dou_vacancy, get_urls_linkedin, grab_linkedin_vacancy
+from job_market_pipeline.clear_data import clear_data_dou, clear_data_linkedin
+from job_market_pipeline.data_analytics import generate_wordcloud_from_df, compare_dfs, generate_olap_cube
 
 if __name__ == '__main__':
     #search_str = 'data analyst'

@@ -1,4 +1,4 @@
-from lab1.parser import Parser
+from web_scraping.parser import Parser
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import pandas as pd
@@ -83,15 +83,20 @@ def plot_graph(x, y, title_x, title_y):
 
 
 if __name__ == '__main__':
-    url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
-    if not url:
-        print('URL не введено. Використовується URL за замовчуванням.')
-        url = 'https://ek.ua/ua/CANON-50MM-F-1-4-EF-USM.htm'
-    #url = 'https://ek.ua/ua/APPLE-IPHONE-16-PRO-MAX-256GB.htm'
-    print('-' * 50)
+    # url = input('Введіть URL для парсингу (сторінка товару на ekatalog): ')
+    # if not url:
+    #     print('URL не введено. Використовується URL за замовчуванням.')
+    #     url = 'https://ek.ua/ua/CANON-50MM-F-1-4-EF-USM.htm'
+    # #url = 'https://ek.ua/ua/APPLE-IPHONE-16-PRO-MAX-256GB.htm'
+    # print('-' * 50)
+    #
+    # parser = Parser(url)
+    # price_change, number_of_shops = parser.parse_table(save_to_files=False)
 
-    parser = Parser(url)
-    price_change, number_of_shops = parser.parse_table(save_to_files=False)
+    # read from file, if needed
+    price_change = pd.read_excel('../web_scraping//data/ECOFLOW-DELTA-2_price_change.xlsx')
+    number_of_shops = pd.read_excel('../web_scraping/data/ECOFLOW-DELTA-2_number_of_shops.xlsx')
+
     plot_graph(price_change['date'], price_change['avg'], 'Дата', 'Середня ціна')
 
     optimal_clusters_needed = input('Вам потрібно знайти оптимальну кількість кластерів? (y/n): ')

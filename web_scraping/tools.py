@@ -1,4 +1,4 @@
-from lab1.statistical import DataStats
+from web_scraping.statistical import DataStats
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
